@@ -1,31 +1,63 @@
 /*
- * Braitenvehicle.cpp - library for StuProXtended Course at Bachelor Digital Ideation 2019
+ * Braitenvehicle.cpp
  * Version 0.1
  *
- * Original library        (0.1)   by Gordan Savicic (Software) and Tom Pawlofsky (Hardware)
- * Further development     (0.2)   by Students HSLU :) 
- * 
- * You'll need the Stepper library installed https://www.arduino.cc/en/Reference/Stepper
- * State Machine library: https://github.com/jrullan/StateMachine
- * LinkedList: https://github.com/ivanseidel/LinkedList
+ * Original library        (0.1)   by Gordan Savicic with help from Gottfried Haider
  * */
 
 #include "Arduino.h"
-#include "Stepper.h"
 #include "Braitenvehicle.h"
-
+#include <Wire.h>
+#include <Adafruit_MotorShield.h>
+#include <AccelStepper.h>
 
 /*
  *   constructor for two four-pin stepper motor
  */
-Braitenvehicle::Braitenvehicle(byte numberOfSteps, const byte l[], const byte r[], const byte Sensors[]): 
-  numberOfSteps(numberOfSteps),
-  leftStepper(numberOfSteps, l[0],l[1], l[2], l[3]),
-  rightStepper(numberOfSteps, r[0], r[1], r[2], r[3])
+Braitenvehicle::Braitenvehicle(const int numberOfSteps, byte coilSteps): 
+  numberOfSteps(numberOfSteps),AFMS(Adafruit_MotorShield())
 {
-  
-  
+  this->coilSteps = coilSteps;
+  motorLeft = this->AFMS.getStepper(numberOfSteps, 1);
+  motorRight = this->AFMS.getStepper(numberOfSteps, 2);
 }
+
+/* 
+ * Move vehicle straight forwards
+ * @steps int number of steps 
+ */
+
+void Braitenvehicle::forward(int steps) {
+  motorLeft->step(steps, FORWARD, this->coilSteps); 
+  motorRight->step(steps, FORWARD, this->coilSteps); 
+}
+
+/* 
+ * Move vehicle straight backwards
+ * @steps int number of steps 
+ */
+void Braitenvehicle::backward(int steps) {
+  motorLeft->step(steps, BACKWARD, this->coilSteps); 
+  motorRight->step(steps, BACKWARD, this->coilSteps); 
+}
+
+void Braitenvehicle::forwardstep1() {  
+  motorLeft->onestep(FORWARD, this->coilSteps);
+}
+void Braitenvehicle::forwardstep2() { 
+  motorRight->onestep(FORWARD, this->coilSteps);
+}
+void Braitenvehicle::backwardstep1() {  
+  motorLeft->onestep(BACKWARD, this->coilSteps);
+}
+void Braitenvehicle::backwardstep2() { 
+  motorRight->onestep(BACKWARD, this->coilSteps);
+}
+
+int Braitenvehicle::version(void) {
+  return 1;
+}
+
 
 /*
  *   Initialize sensor states
@@ -52,23 +84,3 @@ bool Braitenvehicle::watchSensors(const byte Sensors[]) {
   Serial.println(analogRead(Sensors[0]));
   return true;
 }
-
-/* 
- * Move vehicle straight forwards
- * @steps int number of steps 
- */
-
-void Braitenvehicle::forward(int steps) {
-  this->leftStepper.step(steps);
-  this->rightStepper.step(steps);
-}
-
-/* 
- * Move vehicle straight backwards
- * @steps int number of steps 
- */
-void Braitenvehicle::backward(int steps) {
-  this->leftStepper.step(steps * -1);
-  this->rightStepper.step(steps * -1);
-}
-
