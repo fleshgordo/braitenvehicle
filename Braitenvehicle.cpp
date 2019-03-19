@@ -5,11 +5,11 @@
  * Original library        (0.1)   by Gordan Savicic with help from Gottfried Haider
  * */
 
+#include "AccelStepper.h"
 #include "Arduino.h"
 #include "Braitenvehicle.h"
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
-#include <AccelStepper.h>
 
 /*
  *   constructor for two four-pin stepper motor

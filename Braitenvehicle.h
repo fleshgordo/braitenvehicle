@@ -6,9 +6,9 @@
 #ifndef Braitenvehicle_h
 #define Braitenvehicle_h
 
+#include "AccelStepper.h"
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
-#include <AccelStepper.h>
 
 // library interface description
 class Braitenvehicle {
