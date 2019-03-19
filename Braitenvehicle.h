@@ -6,9 +6,9 @@
 #ifndef Braitenvehicle_h
 #define Braitenvehicle_h
 
+#include "AccelStepperOO.h"
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
-#include <AccelStepper.h>
 
 // library interface description
 class Braitenvehicle {
@@ -36,15 +36,13 @@ class Braitenvehicle {
     Adafruit_StepperMotor *motorLeft;
     Adafruit_StepperMotor *motorRight;
 
-    void forwardstep1();
-    void backwardstep1();
-    void forwardstep2();
-    void backwardstep2();
+    static void forwardstep1(void *user);
+    static void backwardstep1(void *user);
+    static void forwardstep2(void *user);
+    static void backwardstep2(void *user);
 
-
-    AccelStepper stepperLeft;
-    AccelStepper stepperRight;
-    
+    AccelStepperOO *stepperLeft;
+    AccelStepperOO *stepperRight;    
 };
 
 #endif

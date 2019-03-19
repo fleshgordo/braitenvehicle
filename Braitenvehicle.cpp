@@ -5,11 +5,11 @@
  * Original library        (0.1)   Gordan Savicic with help from Gottfried Haider
  * */
 
+#include "AccelStepperOO.h"
 #include "Arduino.h"
 #include "Braitenvehicle.h"
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
-#include <AccelStepper.h>
 
 /*
  *   constructor for two four-pin stepper motor
@@ -20,6 +20,8 @@ Braitenvehicle::Braitenvehicle(const int numberOfSteps, byte coilSteps):
   this->coilSteps = coilSteps;
   motorLeft = this->AFMS.getStepper(numberOfSteps, 1);
   motorRight = this->AFMS.getStepper(numberOfSteps, 2);
+  stepperLeft = new AccelStepperOO(Braitenvehicle::forwardstep1, Braitenvehicle::backwardstep1, (void*)this);
+  stepperRight = new AccelStepperOO(Braitenvehicle::forwardstep2, Braitenvehicle::backwardstep2, (void*)this);
 }
 
 /* 
@@ -39,10 +41,27 @@ void Braitenvehicle::forward(int steps) {
  * @steps int number of steps 
  */
 void Braitenvehicle::backward(int steps) {
-  for (int i = 0; i < steps; i++) {
+   for (int i = 0; i < steps; i++) {
     motorLeft->onestep(BACKWARD, this->coilSteps);
     motorRight->onestep(BACKWARD, this->coilSteps); 
   }
+}
+
+static void Braitenvehicle::forwardstep1(void *user) {
+  Braitenvehicle *self = (Braitenvehicle*)user;
+  self->motorLeft->onestep(FORWARD, self->coilSteps);
+}
+static void Braitenvehicle::forwardstep2(void *user) {
+  Braitenvehicle *self = (Braitenvehicle*)user;
+  self->motorRight->onestep(FORWARD, self->coilSteps);
+}
+static void Braitenvehicle::backwardstep1(void *user) {
+  Braitenvehicle *self = (Braitenvehicle*)user;
+  self->motorLeft->onestep(BACKWARD, self->coilSteps);
+}
+static void Braitenvehicle::backwardstep2(void *user) {
+  Braitenvehicle *self = (Braitenvehicle*)user;
+  self->motorRight->onestep(BACKWARD, self->coilSteps);
 }
 
 /* 
