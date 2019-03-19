@@ -363,7 +363,8 @@ public:
     /// Any motor initialization should happen before hand, no pins are used or initialized.
     /// \param[in] forward void-returning procedure that will make a forward step
     /// \param[in] backward void-returning procedure that will make a backward step
-    AccelStepperOO(void (*forward)(), void (*backward)());
+    /// \param[in] user user-defined pointer being passed to the callback functions
+    AccelStepperOO(void (*forward)(), void (*backward)(), void *user);
     
     /// Set the target position. The run() function will try to move the motor (at most one step per call)
     /// from the current position to the target position set by the most
@@ -654,10 +655,10 @@ private:
     uint8_t        _enablePin;
 
     /// The pointer to a forward-step procedure
-    void (*_forward)();
+    void (*_forward)(void*);
 
     /// The pointer to a backward-step procedure
-    void (*_backward)();
+    void (*_backward)(void*);
 
     /// The step counter for speed calculations
     long _n;
@@ -671,6 +672,8 @@ private:
     /// Min step size in microseconds based on maxSpeed
     float _cmin; // at max speed
 
+    /// User user-defined pointer being passed to the callback functions
+    void *_user;
 };
 
 /// @example Random.pde

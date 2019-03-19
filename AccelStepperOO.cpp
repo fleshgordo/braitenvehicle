@@ -222,7 +222,7 @@ AccelStepperOO::AccelStepperOO(uint8_t interface, uint8_t pin1, uint8_t pin2, ui
     setAcceleration(1);
 }
 
-AccelStepperOO::AccelStepperOO(void (*forward)(), void (*backward)())
+AccelStepperOO::AccelStepperOO(void (*forward)(), void (*backward)(), void *user)
 {
     _interface = 0;
     _currentPos = 0;
@@ -241,6 +241,7 @@ AccelStepperOO::AccelStepperOO(void (*forward)(), void (*backward)())
     _pin[3] = 0;
     _forward = forward;
     _backward = backward;
+    _user = user;
 
     // NEW
     _n = 0;
@@ -371,9 +372,9 @@ void AccelStepperOO::step0(long step)
 {
     (void)(step); // Unused
     if (_speed > 0)
-	_forward();
+	_forward(_user);
     else
-	_backward();
+	_backward(_user);
 }
 
 // 1 pin step function (ie for stepper drivers)
