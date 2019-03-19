@@ -20,7 +20,8 @@ class Braitenvehicle {
    
     void forward(int steps);
     void backward(int steps);
-    
+    void release();
+
     bool watchSensors(const byte Sensors[]);
     void initSensors(const byte Sensors[]);
 
@@ -41,8 +42,7 @@ class Braitenvehicle {
     static void backwardstep2(void *user);
 
     AccelStepperOO *stepperLeft;
-    AccelStepperOO *stepperRight;
-    
+    AccelStepperOO *stepperRight;    
 };
 
 #endif

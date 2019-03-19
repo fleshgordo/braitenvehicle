@@ -2,7 +2,7 @@
  * Braitenvehicle.cpp
  * Version 0.1
  *
- * Original library        (0.1)   by Gordan Savicic with help from Gottfried Haider
+ * Original library        (0.1)   Gordan Savicic with help from Gottfried Haider
  * */
 
 #include "AccelStepperOO.h"
@@ -30,8 +30,10 @@ Braitenvehicle::Braitenvehicle(const int numberOfSteps, byte coilSteps):
  */
 
 void Braitenvehicle::forward(int steps) {
-  motorLeft->step(steps, FORWARD, this->coilSteps); 
-  motorRight->step(steps, FORWARD, this->coilSteps); 
+  for (int i = 0; i < steps; i++) {
+    motorLeft->onestep(FORWARD, this->coilSteps);
+    motorRight->onestep(FORWARD, this->coilSteps); 
+  }
 }
 
 /* 
@@ -39,8 +41,10 @@ void Braitenvehicle::forward(int steps) {
  * @steps int number of steps 
  */
 void Braitenvehicle::backward(int steps) {
-  motorLeft->step(steps, BACKWARD, this->coilSteps);
-  motorRight->step(steps, BACKWARD, this->coilSteps); 
+   for (int i = 0; i < steps; i++) {
+    motorLeft->onestep(BACKWARD, this->coilSteps);
+    motorRight->onestep(BACKWARD, this->coilSteps); 
+  }
 }
 
 static void Braitenvehicle::forwardstep1(void *user) {
@@ -60,10 +64,13 @@ static void Braitenvehicle::backwardstep2(void *user) {
   self->motorRight->onestep(BACKWARD, self->coilSteps);
 }
 
-int Braitenvehicle::version(void) {
-  return 1;
+/* 
+ * Release switches off both motors 
+ */
+void Braitenvehicle::release() {
+  motorLeft->release();
+  motorRight->release();
 }
-
 
 /*
  *   Initialize sensor states
@@ -89,4 +96,25 @@ bool Braitenvehicle::watchSensors(const byte Sensors[]) {
   }
   Serial.println(analogRead(Sensors[0]));
   return true;
+}
+
+
+void Braitenvehicle::forwardstep1() {  
+  motorLeft->onestep(FORWARD, MICROSTEP);
+}
+void Braitenvehicle::forwardstep2() { 
+  motorRight->onestep(FORWARD, MICROSTEP);
+}
+void Braitenvehicle::backwardstep1() {  
+  motorLeft->onestep(BACKWARD, MICROSTEP);
+}
+void Braitenvehicle::backwardstep2() { 
+  motorRight->onestep(BACKWARD, MICROSTEP);
+}
+
+/*
+ *   Show version number - for testing purpose only
+ */
+int Braitenvehicle::version(void) {
+  return 1;
 }
