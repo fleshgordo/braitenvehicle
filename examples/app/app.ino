@@ -22,7 +22,7 @@ const uint8_t Sensors[] = {A0,A1,200,200};
  * SINGLE | DOUBLE | INTERLEAVE | MICROSTEP
  * connect two motors to the shield (motorRight M3/M4 motorLeft M1/M2)
  * */
-Braitenvehicle myVehicle(stepsPerRevolution,MICROSTEP);
+Braitenvehicle myVehicle(stepsPerRevolution,DOUBLE);
 
 // initialize State machine
 StateMachine machine = StateMachine();
@@ -67,7 +67,7 @@ void loop() {
 void state1(){
   Serial.println("State 1");
   while(myVehicle.watchSensors(Sensors)) {
-    myVehicle.forward(20);
+    myVehicle.forward(200);
   }
 }
 
@@ -81,6 +81,9 @@ bool transitionS1S2(){
 
 void state2(){
   Serial.println("State 2");
+  while(myVehicle.watchSensors(Sensors)) {
+    myVehicle.release();
+  }
 }
 
 bool transitionS2S1(){
