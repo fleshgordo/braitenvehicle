@@ -5,7 +5,7 @@
  * Original library        (0.1)   by Gordan Savicic with help from Gottfried Haider
  * */
 
-#include "AccelStepper.h"
+#include "AccelStepperOO.h"
 #include "Arduino.h"
 #include "Braitenvehicle.h"
 #include <Wire.h>
@@ -20,8 +20,8 @@ Braitenvehicle::Braitenvehicle(const int numberOfSteps, byte coilSteps):
   this->coilSteps = coilSteps;
   motorLeft = this->AFMS.getStepper(numberOfSteps, 1);
   motorRight = this->AFMS.getStepper(numberOfSteps, 2);
-  stepperLeft = new AccelStepper(Braitenvehicle::forwardstep1, Braitenvehicle::backwardstep1);
-  stepperRight = new AccelStepper(Braitenvehicle::forwardstep2, Braitenvehicle::backwardstep2);
+  stepperLeft = new AccelStepperOO(Braitenvehicle::forwardstep1, Braitenvehicle::backwardstep1);
+  stepperRight = new AccelStepperOO(Braitenvehicle::forwardstep2, Braitenvehicle::backwardstep2);
 }
 
 /* 

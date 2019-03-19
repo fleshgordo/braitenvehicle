@@ -1,9 +1,9 @@
-// AccelStepper.cpp
+// AccelStepperOO.cpp
 //
 // Copyright (C) 2009-2013 Mike McCauley
-// $Id: AccelStepper.cpp,v 1.23 2016/08/09 00:39:10 mikem Exp $
+// $Id: AccelStepperOO.cpp,v 1.23 2016/08/09 00:39:10 mikem Exp $
 
-#include "AccelStepper.h"
+#include "AccelStepperOO.h"
 
 #if 0
 // Some debugging assistance
@@ -20,7 +20,7 @@ void dump(uint8_t* p, int l)
 }
 #endif
 
-void AccelStepper::moveTo(long absolute)
+void AccelStepperOO::moveTo(long absolute)
 {
     if (_targetPos != absolute)
     {
@@ -30,7 +30,7 @@ void AccelStepper::moveTo(long absolute)
     }
 }
 
-void AccelStepper::move(long relative)
+void AccelStepperOO::move(long relative)
 {
     moveTo(_currentPos + relative);
 }
@@ -38,7 +38,7 @@ void AccelStepper::move(long relative)
 // Implements steps according to the current step interval
 // You must call this at least once per step
 // returns true if a step occurred
-boolean AccelStepper::runSpeed()
+boolean AccelStepperOO::runSpeed()
 {
     // Dont do anything unless we actually have a step interval
     if (!_stepInterval)
@@ -69,24 +69,24 @@ boolean AccelStepper::runSpeed()
     }
 }
 
-long AccelStepper::distanceToGo()
+long AccelStepperOO::distanceToGo()
 {
     return _targetPos - _currentPos;
 }
 
-long AccelStepper::targetPosition()
+long AccelStepperOO::targetPosition()
 {
     return _targetPos;
 }
 
-long AccelStepper::currentPosition()
+long AccelStepperOO::currentPosition()
 {
     return _currentPos;
 }
 
 // Useful during initialisations or after initial positioning
 // Sets speed to 0
-void AccelStepper::setCurrentPosition(long position)
+void AccelStepperOO::setCurrentPosition(long position)
 {
     _targetPos = _currentPos = position;
     _n = 0;
@@ -94,7 +94,7 @@ void AccelStepper::setCurrentPosition(long position)
     _speed = 0.0;
 }
 
-void AccelStepper::computeNewSpeed()
+void AccelStepperOO::computeNewSpeed()
 {
     long distanceTo = distanceToGo(); // +ve is clockwise from curent location
 
@@ -180,14 +180,14 @@ void AccelStepper::computeNewSpeed()
 // You must call this at least once per step, preferably in your main loop
 // If the motor is in the desired position, the cost is very small
 // returns true if the motor is still running to the target position.
-boolean AccelStepper::run()
+boolean AccelStepperOO::run()
 {
     if (runSpeed())
 	computeNewSpeed();
     return _speed != 0.0 || distanceToGo() != 0;
 }
 
-AccelStepper::AccelStepper(uint8_t interface, uint8_t pin1, uint8_t pin2, uint8_t pin3, uint8_t pin4, bool enable)
+AccelStepperOO::AccelStepperOO(uint8_t interface, uint8_t pin1, uint8_t pin2, uint8_t pin3, uint8_t pin4, bool enable)
 {
     _interface = interface;
     _currentPos = 0;
@@ -222,7 +222,7 @@ AccelStepper::AccelStepper(uint8_t interface, uint8_t pin1, uint8_t pin2, uint8_
     setAcceleration(1);
 }
 
-AccelStepper::AccelStepper(void (*forward)(), void (*backward)())
+AccelStepperOO::AccelStepperOO(void (*forward)(), void (*backward)())
 {
     _interface = 0;
     _currentPos = 0;
@@ -256,7 +256,7 @@ AccelStepper::AccelStepper(void (*forward)(), void (*backward)())
     setAcceleration(1);
 }
 
-void AccelStepper::setMaxSpeed(float speed)
+void AccelStepperOO::setMaxSpeed(float speed)
 {
     if (speed < 0.0)
        speed = -speed;
@@ -273,12 +273,12 @@ void AccelStepper::setMaxSpeed(float speed)
     }
 }
 
-float   AccelStepper::maxSpeed()
+float   AccelStepperOO::maxSpeed()
 {
     return _maxSpeed;
 }
 
-void AccelStepper::setAcceleration(float acceleration)
+void AccelStepperOO::setAcceleration(float acceleration)
 {
     if (acceleration == 0.0)
 	return;
@@ -295,7 +295,7 @@ void AccelStepper::setAcceleration(float acceleration)
     }
 }
 
-void AccelStepper::setSpeed(float speed)
+void AccelStepperOO::setSpeed(float speed)
 {
     if (speed == _speed)
         return;
@@ -310,13 +310,13 @@ void AccelStepper::setSpeed(float speed)
     _speed = speed;
 }
 
-float AccelStepper::speed()
+float AccelStepperOO::speed()
 {
     return _speed;
 }
 
 // Subclasses can override
-void AccelStepper::step(long step)
+void AccelStepperOO::step(long step)
 {
     switch (_interface)
     {
@@ -354,7 +354,7 @@ void AccelStepper::step(long step)
 // bit 0 of the mask corresponds to _pin[0]
 // bit 1 of the mask corresponds to _pin[1]
 // ....
-void AccelStepper::setOutputPins(uint8_t mask)
+void AccelStepperOO::setOutputPins(uint8_t mask)
 {
     uint8_t numpins = 2;
     if (_interface == FULL4WIRE || _interface == HALF4WIRE)
@@ -367,7 +367,7 @@ void AccelStepper::setOutputPins(uint8_t mask)
 }
 
 // 0 pin step function (ie for functional usage)
-void AccelStepper::step0(long step)
+void AccelStepperOO::step0(long step)
 {
     (void)(step); // Unused
     if (_speed > 0)
@@ -379,7 +379,7 @@ void AccelStepper::step0(long step)
 // 1 pin step function (ie for stepper drivers)
 // This is passed the current step number (0 to 7)
 // Subclasses can override
-void AccelStepper::step1(long step)
+void AccelStepperOO::step1(long step)
 {
     (void)(step); // Unused
 
@@ -396,7 +396,7 @@ void AccelStepper::step1(long step)
 // 2 pin step function
 // This is passed the current step number (0 to 7)
 // Subclasses can override
-void AccelStepper::step2(long step)
+void AccelStepperOO::step2(long step)
 {
     switch (step & 0x3)
     {
@@ -420,7 +420,7 @@ void AccelStepper::step2(long step)
 // 3 pin step function
 // This is passed the current step number (0 to 7)
 // Subclasses can override
-void AccelStepper::step3(long step)
+void AccelStepperOO::step3(long step)
 {
     switch (step % 3)
     {
@@ -442,7 +442,7 @@ void AccelStepper::step3(long step)
 // 4 pin step function for half stepper
 // This is passed the current step number (0 to 7)
 // Subclasses can override
-void AccelStepper::step4(long step)
+void AccelStepperOO::step4(long step)
 {
     switch (step & 0x3)
     {
@@ -467,7 +467,7 @@ void AccelStepper::step4(long step)
 // 3 pin half step function
 // This is passed the current step number (0 to 7)
 // Subclasses can override
-void AccelStepper::step6(long step)
+void AccelStepperOO::step6(long step)
 {
     switch (step % 6)
     {
@@ -501,7 +501,7 @@ void AccelStepper::step6(long step)
 // 4 pin half step function
 // This is passed the current step number (0 to 7)
 // Subclasses can override
-void AccelStepper::step8(long step)
+void AccelStepperOO::step8(long step)
 {
     switch (step & 0x7)
     {
@@ -540,7 +540,7 @@ void AccelStepper::step8(long step)
 }
     
 // Prevents power consumption on the outputs
-void    AccelStepper::disableOutputs()
+void    AccelStepperOO::disableOutputs()
 {   
     if (! _interface) return;
 
@@ -552,7 +552,7 @@ void    AccelStepper::disableOutputs()
     }
 }
 
-void    AccelStepper::enableOutputs()
+void    AccelStepperOO::enableOutputs()
 {
     if (! _interface) 
 	return;
@@ -576,12 +576,12 @@ void    AccelStepper::enableOutputs()
     }
 }
 
-void AccelStepper::setMinPulseWidth(unsigned int minWidth)
+void AccelStepperOO::setMinPulseWidth(unsigned int minWidth)
 {
     _minPulseWidth = minWidth;
 }
 
-void AccelStepper::setEnablePin(uint8_t enablePin)
+void AccelStepperOO::setEnablePin(uint8_t enablePin)
 {
     _enablePin = enablePin;
 
@@ -593,14 +593,14 @@ void AccelStepper::setEnablePin(uint8_t enablePin)
     }
 }
 
-void AccelStepper::setPinsInverted(bool directionInvert, bool stepInvert, bool enableInvert)
+void AccelStepperOO::setPinsInverted(bool directionInvert, bool stepInvert, bool enableInvert)
 {
     _pinInverted[0] = stepInvert;
     _pinInverted[1] = directionInvert;
     _enableInverted = enableInvert;
 }
 
-void AccelStepper::setPinsInverted(bool pin1Invert, bool pin2Invert, bool pin3Invert, bool pin4Invert, bool enableInvert)
+void AccelStepperOO::setPinsInverted(bool pin1Invert, bool pin2Invert, bool pin3Invert, bool pin4Invert, bool enableInvert)
 {    
     _pinInverted[0] = pin1Invert;
     _pinInverted[1] = pin2Invert;
@@ -610,13 +610,13 @@ void AccelStepper::setPinsInverted(bool pin1Invert, bool pin2Invert, bool pin3In
 }
 
 // Blocks until the target position is reached and stopped
-void AccelStepper::runToPosition()
+void AccelStepperOO::runToPosition()
 {
     while (run())
 	;
 }
 
-boolean AccelStepper::runSpeedToPosition()
+boolean AccelStepperOO::runSpeedToPosition()
 {
     if (_targetPos == _currentPos)
 	return false;
@@ -628,13 +628,13 @@ boolean AccelStepper::runSpeedToPosition()
 }
 
 // Blocks until the new target position is reached
-void AccelStepper::runToNewPosition(long position)
+void AccelStepperOO::runToNewPosition(long position)
 {
     moveTo(position);
     runToPosition();
 }
 
-void AccelStepper::stop()
+void AccelStepperOO::stop()
 {
     if (_speed != 0.0)
     {    
@@ -646,7 +646,7 @@ void AccelStepper::stop()
     }
 }
 
-bool AccelStepper::isRunning()
+bool AccelStepperOO::isRunning()
 {
     return !(_speed == 0.0 && _targetPos == _currentPos);
 }

@@ -6,7 +6,7 @@
 #ifndef Braitenvehicle_h
 #define Braitenvehicle_h
 
-#include "AccelStepper.h"
+#include "AccelStepperOO.h"
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
 
@@ -40,8 +40,8 @@ class Braitenvehicle {
     static void forwardstep2();
     static void backwardstep2();
 
-    AccelStepper *stepperLeft;
-    AccelStepper *stepperRight;
+    AccelStepperOO *stepperLeft;
+    AccelStepperOO *stepperRight;
     
 };
 
