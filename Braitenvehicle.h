@@ -35,13 +35,13 @@ class Braitenvehicle {
     Adafruit_StepperMotor *motorLeft;
     Adafruit_StepperMotor *motorRight;
 
-    void forwardstep1();
-    void backwardstep1();
-    void forwardstep2();
-    void backwardstep2();
+    static void forwardstep1();
+    static void backwardstep1();
+    static void forwardstep2();
+    static void backwardstep2();
 
-    AccelStepper stepperLeft;
-    AccelStepper stepperRight;
+    AccelStepper *stepperLeft;
+    AccelStepper *stepperRight;
     
 };
 

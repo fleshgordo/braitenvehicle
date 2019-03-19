@@ -20,6 +20,8 @@ Braitenvehicle::Braitenvehicle(const int numberOfSteps, byte coilSteps):
   this->coilSteps = coilSteps;
   motorLeft = this->AFMS.getStepper(numberOfSteps, 1);
   motorRight = this->AFMS.getStepper(numberOfSteps, 2);
+  stepperLeft = new AccelStepper(Braitenvehicle::forwardstep1, Braitenvehicle::backwardstep1);
+  stepperRight = new AccelStepper(Braitenvehicle::forwardstep2, Braitenvehicle::backwardstep2);
 }
 
 /* 
@@ -37,21 +39,22 @@ void Braitenvehicle::forward(int steps) {
  * @steps int number of steps 
  */
 void Braitenvehicle::backward(int steps) {
-  motorLeft->step(steps, BACKWARD, this->coilSteps); 
+  motorLeft->step(steps, BACKWARD, this->coilSteps);
   motorRight->step(steps, BACKWARD, this->coilSteps); 
 }
 
-void Braitenvehicle::forwardstep1() {  
-  motorLeft->onestep(FORWARD, this->coilSteps);
+static void Braitenvehicle::forwardstep1() {
+  // this static method can't access member variables :(
+  //motorLeft->onestep(FORWARD, this->coilSteps);
 }
-void Braitenvehicle::forwardstep2() { 
-  motorRight->onestep(FORWARD, this->coilSteps);
+static void Braitenvehicle::forwardstep2() {
+  //motorRight->onestep(FORWARD, this->coilSteps);
 }
-void Braitenvehicle::backwardstep1() {  
-  motorLeft->onestep(BACKWARD, this->coilSteps);
+static void Braitenvehicle::backwardstep1() {
+  //motorLeft->onestep(BACKWARD, this->coilSteps);
 }
-void Braitenvehicle::backwardstep2() { 
-  motorRight->onestep(BACKWARD, this->coilSteps);
+static void Braitenvehicle::backwardstep2() {
+  //motorRight->onestep(BACKWARD, this->coilSteps);
 }
 
 int Braitenvehicle::version(void) {
