@@ -25,12 +25,16 @@ class Braitenvehicle {
     bool watchSensors(const byte Sensors[]);
     void initSensors(const byte Sensors[]);
 
-    // void setMotorSpeed(boolean left, boolean right, int speed);
-    // void moveTo(boolean left, boolean right, int position);
-    void run();
+    void moveTo(int leftPos, int rightPos);
+    void setMaxSpeed(float leftSpeed, float rightSpeed);
+    
+    boolean run(void);
 
     Adafruit_MotorShield AFMS;
  
+    AccelStepperOO *stepperLeft;
+    AccelStepperOO *stepperRight; 
+  
   private:
     const int numberOfSteps;
 
@@ -44,9 +48,6 @@ class Braitenvehicle {
     static void backwardstep1(void *user);
     static void forwardstep2(void *user);
     static void backwardstep2(void *user);
-
-    AccelStepperOO *stepperLeft;
-    AccelStepperOO *stepperRight;    
 };
 
 #endif

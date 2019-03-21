@@ -1,8 +1,10 @@
 /*
- * Braitenvehicle Example File
- * Version 0.1
- * You'll need the Stepper Adafruit Rev2 stepper library 
- * https://learn.adafruit.com/adafruit-motor-shield-v2-for-arduino/library-reference
+   Braitenvehicle Example File with Statemachine Logic
+   Version 0.1
+   You'll need the Stepper Adafruit Rev2 stepper library
+   https://learn.adafruit.com/adafruit-motor-shield-v2-for-arduino/library-reference
+   and AccelStepper https://www.airspayce.com/mikem/arduino/AccelStepper/
+   
  * */
 
 
@@ -13,16 +15,16 @@ const int stepsPerRevolution = 200;  // change this to fit the number of steps p
 
 
 // analog sensors: pin0, pin1, threshold1, threshold2
-const uint8_t Sensors[] = {A0,A1,200,200};
+const uint8_t Sensors[] = {A0, A1, 200, 200};
 
 /*
- * Initialize the Braitenvehicle library
- * @params
- * stepsPerRevolution  200 (1.8 degree)
- * SINGLE | DOUBLE | INTERLEAVE | MICROSTEP
- * connect two motors to the shield (motorRight M3/M4 motorLeft M1/M2)
+   Initialize the Braitenvehicle library
+   @params
+   stepsPerRevolution  200 (1.8 degree)
+   SINGLE | DOUBLE | INTERLEAVE | MICROSTEP
+   connect two motors to the shield (motorRight M3/M4 motorLeft M1/M2)
  * */
-Braitenvehicle myVehicle(stepsPerRevolution,DOUBLE);
+Braitenvehicle myVehicle(stepsPerRevolution, DOUBLE);
 
 // initialize State machine
 StateMachine machine = StateMachine();
@@ -32,14 +34,14 @@ State* S1 = machine.addState(&state1);
 State* S2 = machine.addState(&state2);
 
 /*
- * // For adding a state, first initialise
- * State* S3 = machine.addState(&state3);
- * 
- * // Add transition within setup() function
- * S3->addTransition(&transitionS3S1,S1);
- * 
- * define void transitionS3S1() { // transition here, if not needed just do return true;}
- * define void state3() {}
+   // For adding a state, first initialise
+   State* S3 = machine.addState(&state3);
+
+   // Add transition within setup() function
+   S3->addTransition(&transitionS3S1,S1);
+
+   define void transitionS3S1() { // transition here, if not needed just do return true;}
+   define void state3() {}
  * */
 
 void setup() {
@@ -49,10 +51,12 @@ void setup() {
   // init sensors
   myVehicle.initSensors(Sensors);
   myVehicle.AFMS.begin();
-  
+
+  myVehicle.setMaxSpeed(100.0, 100.0);
+
   // define state transitions
-  S1->addTransition(&transitionS1S2,S2);
-  S2->addTransition(&transitionS2S1,S1);
+  S1->addTransition(&transitionS1S2, S2);
+  S2->addTransition(&transitionS2S1, S1);
 
 }
 
@@ -62,31 +66,32 @@ void loop() {
 }
 
 /*
- * FIRST STATE
- * return false will exit this state and call transition
+   FIRST STATE
+   return false will exit this state and call transition
  * */
-void state1(){
-  Serial.println("State 1");
-  while(myVehicle.watchSensors(Sensors)) {
-    myVehicle.run();
-  }
+void state1() {
+  Serial.println("******* State 1 *******");
+  myVehicle.moveTo(random(500), random(500));
+  while (myVehicle.run());
 }
 
 /*
- * TRANSITION FROM State1 to State2
- * return true will pass to next state (state2)
+   TRANSITION FROM State1 to State2
+   return true will pass to next state (state2)
  * */
-bool transitionS1S2(){
+bool transitionS1S2() {
+  Serial.println(">>>>>>> Transition 1 -> 2 <<<<<<<<");
   return true;
 }
 
-void state2(){
-  Serial.println("State 2");
-  while(myVehicle.watchSensors(Sensors)) {
+void state2() {
+  Serial.println("******* State 2 *******");
+  while (myVehicle.watchSensors(Sensors)) {
     myVehicle.release();
   }
 }
 
-bool transitionS2S1(){
+bool transitionS2S1() {
+  Serial.println(">>>>>>> Transition 2 -> 1 <<<<<<<<");
   return true;
 }
