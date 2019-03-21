@@ -25,6 +25,10 @@ class Braitenvehicle {
     bool watchSensors(const byte Sensors[]);
     void initSensors(const byte Sensors[]);
 
+    // void setMotorSpeed(boolean left, boolean right, int speed);
+    // void moveTo(boolean left, boolean right, int position);
+    void run();
+
     Adafruit_MotorShield AFMS;
  
   private:

@@ -53,6 +53,7 @@ void setup() {
   // define state transitions
   S1->addTransition(&transitionS1S2,S2);
   S2->addTransition(&transitionS2S1,S1);
+
 }
 
 void loop() {
@@ -67,7 +68,7 @@ void loop() {
 void state1(){
   Serial.println("State 1");
   while(myVehicle.watchSensors(Sensors)) {
-    myVehicle.forward(200);
+    myVehicle.run();
   }
 }
 

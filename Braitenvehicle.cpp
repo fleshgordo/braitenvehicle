@@ -25,6 +25,14 @@ Braitenvehicle::Braitenvehicle(const int numberOfSteps, byte coilSteps):
 }
 
 /* 
+ * Poll the motor and step it if a step is due, implementing accelerations and decelerations
+ */
+void run() {
+  stepperLeft->run();
+  stepperRight->run();
+}
+
+/* 
  * Move vehicle straight forwards
  * @steps int number of steps 
  */
@@ -98,20 +106,9 @@ bool Braitenvehicle::watchSensors(const byte Sensors[]) {
   return true;
 }
 
+void moveAcceleration() {
 
-void Braitenvehicle::forwardstep1() {  
-  motorLeft->onestep(FORWARD, MICROSTEP);
 }
-void Braitenvehicle::forwardstep2() { 
-  motorRight->onestep(FORWARD, MICROSTEP);
-}
-void Braitenvehicle::backwardstep1() {  
-  motorLeft->onestep(BACKWARD, MICROSTEP);
-}
-void Braitenvehicle::backwardstep2() { 
-  motorRight->onestep(BACKWARD, MICROSTEP);
-}
-
 /*
  *   Show version number - for testing purpose only
  */
