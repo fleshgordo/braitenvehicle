@@ -27,7 +27,7 @@ Braitenvehicle::Braitenvehicle(const int numberOfSteps, byte coilSteps):
 /* 
  * Poll the motor and step it if a step is due, implementing accelerations and decelerations
  */
-void run() {
+void Braitenvehicle::run() {
   stepperLeft->run();
   stepperRight->run();
 }
