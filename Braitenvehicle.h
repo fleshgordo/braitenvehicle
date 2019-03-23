@@ -26,10 +26,17 @@ class Braitenvehicle {
     void initSensors(const byte Sensors[]);
 
     void moveTo(int leftPos, int rightPos);
+    void move(int leftPos, int rightPos);
+    
+    void turnLeft(int angle);
+    void turnRight(int angle);
+
     void setMaxSpeed(float leftSpeed, float rightSpeed);
+    void setSpeed(float leftSpeed, float rightSpeed);
+    void setAcceleration(float leftAccel, float rightAccel);
     
     boolean run(void);
-
+    
     Adafruit_MotorShield AFMS;
  
     AccelStepperOO *stepperLeft;

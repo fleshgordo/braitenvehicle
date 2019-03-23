@@ -24,7 +24,7 @@ Braitenvehicle::Braitenvehicle(const int numberOfSteps, byte coilSteps):
   
 }
 
-/* 
+/* run
  * Poll the motor and step it if a step is due, implementing accelerations and decelerations
  * @return true   if reached to position
  */
@@ -38,7 +38,7 @@ boolean Braitenvehicle::run() {
 }
 
 /* 
- * Moves both motors to position
+ * Moves both motors to absolute position
  * @param   {int} leftPos   move left motor to specific position 
  * @param   {int} rightPos  move right motor to specific position 
  * @return  true  if reached to position
@@ -49,15 +49,46 @@ void Braitenvehicle::moveTo(int leftPos, int rightPos) {
 }
 
 /* 
+ * Moves both motors to relative position
+ * @param   {int} leftPos   move left motor to specific position 
+ * @param   {int} rightPos  move right motor to specific position 
+ * @return  true  if reached to position
+ */
+void Braitenvehicle::move(int leftPos, int rightPos) {
+  stepperLeft->move(leftPos);
+  stepperRight->move(rightPos);
+}
+
+/* 
  * Set maximum speed for accelerated motors
  * @param {float} leftSpeed   speed for left motor
  * @param {float} rightSpeed  speed for right motor
  */
 void Braitenvehicle::setMaxSpeed(float leftSpeed, float rightSpeed) {
   stepperLeft->setMaxSpeed(leftSpeed);
-  stepperLeft->setAcceleration(500);
   stepperRight->setMaxSpeed(rightSpeed);
-  stepperRight->setAcceleration(500);
+}
+
+/* 
+ * Set speed for accelerated motors (needs to be used with runSpeed())
+ * The desired constant speed in steps per second. Positive is clockwise. Speeds of more than 1000 steps per second are unreliable. 
+ * Very slow speeds may be set (eg 0.00027777 for once per hour, approximately. Speed accuracy depends on the Arduino crystal.
+ * @param {float} leftSpeed   speed for left motor
+ * @param {float} rightSpeed  speed for right motor
+ */
+void Braitenvehicle::setSpeed(float leftSpeed, float rightSpeed) {
+  stepperLeft->setSpeed(leftSpeed);
+  stepperRight->setSpeed(rightSpeed);
+}
+
+/* 
+ * Set acceleration for accelerated motors
+ * @param {float} leftAccel   acceleration for left motor
+ * @param {float} rightAccel  acceleration for right motor
+ */
+void Braitenvehicle::setAcceleration(float leftAccel, float rightAccel) {
+  stepperLeft->setAcceleration(leftAccel);
+  stepperRight->setAcceleration(rightAccel);
 }
 
 /* 
@@ -83,6 +114,9 @@ void Braitenvehicle::backward(int steps) {
   }
 }
 
+/* 
+ * Wrapper one-step functions for Accelstepper
+ */
 static void Braitenvehicle::forwardstep1(void *user) {
   Braitenvehicle *self = (Braitenvehicle*)user;
   self->motorLeft->onestep(FORWARD, self->coilSteps);
@@ -106,6 +140,24 @@ static void Braitenvehicle::backwardstep2(void *user) {
 void Braitenvehicle::release() {
   motorLeft->release();
   motorRight->release();
+}
+
+/* 
+ * Turn left
+ * @param {int} angle
+ */
+void Braitenvehicle::turnLeft(int angle) {
+  stepperLeft->moveTo(this->numberOfSteps / angle);
+  while(stepperLeft->run());
+}
+
+/* 
+ * Turn right
+ * @param {int} angle
+ */
+void Braitenvehicle::turnRight(int angle) {
+  stepperRight->moveTo(this->numberOfSteps / angle);
+  while(stepperRight->run());
 }
 
 /*
@@ -134,9 +186,6 @@ bool Braitenvehicle::watchSensors(const byte Sensors[]) {
   return true;
 }
 
-void moveAcceleration() {
-
-}
 /*
  *   Show version number - for testing purpose only
  */
