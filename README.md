@@ -12,14 +12,14 @@ Course led by Tom Pavlofsky (Hardware) and Gordan Savicic (Software)
 Download the zip file and put it into the library folder of your Arduino installation. Make sure that following libraries are installed (using the library manager for example):
 
   - [Adafruit Motor Shield Rev2 Library](https://github.com/adafruit/Adafruit_Motor_Shield_V2_Library)
-  - [LinkedList](https://github.com/ivanseidel/LinkedList) library.
-  - [State machine](https://github.com/jrullan/StateMachine) library.
+  - [LinkedList](https://github.com/ivanseidel/LinkedList)
+  - [State machine](https://github.com/jrullan/StateMachine)
 
-I am not using the Arduino IDE for development but [Visual Studio Code](https://code.visualstudio.com/) with the [Arduino extension](https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.vscode-arduino). You can upload your sketches directly from your text editor.
+I am not using the Arduino IDE for development but instead [Visual Studio Code](https://code.visualstudio.com/) with the [Arduino extension](https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.vscode-arduino). You can upload your sketches directly from your text editor.
 
 ## Usage
 
-Make sure your steppers are connected to the shield and the coils have correct polarity. Run this testprogramm to see if the motor makes a nice 360degree turn.
+Make sure your steppers are connected to the shield and the coils have correct polarity. Run this [testprogramm](https://github.com/fleshgordo/braitenvehicle/blob/master/examples/Steppertest/Steppertest.ino) to see if the motor makes a nice 360degree turn.
 
 On top of your *.ino file include the library
 ```
@@ -66,6 +66,7 @@ So, inside the Arduino **loop()** function we would call **run()**
 void loop() {
     myVehicle.run();
 }
+```
 
 The **run()** function returns true as long as the motors move and a false value once both motors reached their position. 
 
