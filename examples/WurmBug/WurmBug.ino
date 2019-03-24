@@ -64,6 +64,7 @@ void setup() {
 
 void loop() {
   machine.run();
+  Serial.println(machine.currentState);
   delay(1000);
 }
 
