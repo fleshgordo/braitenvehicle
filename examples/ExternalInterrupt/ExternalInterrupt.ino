@@ -34,6 +34,12 @@ State* S1 = machine.addState(&state1);
 State* S2 = machine.addState(&state2);
 State* S3 = machine.addState(&state3);
 
+const byte interruptPin = 2;
+long lastDebounceTime = 0;  // the last time the output pin was toggled
+long debounceDelay = 50;    // the debounce time; increase if the output flickers
+int buttonState = 0;
+int lastButtonState = 0;
+
 /*
    // For adding a state, first initialise
    State* S3 = machine.addState(&state3);
@@ -60,6 +66,8 @@ void setup() {
   S1->addTransition(&transitionS1S2, S2);
   S2->addTransition(&transitionS2S3, S3);
   S3->addTransition(&transitionS3S1, S1);
+
+  attachInterrupt(digitalPinToInterrupt(interruptPin), stopMotor, RISING);
 }
 
 void loop() {
@@ -68,13 +76,22 @@ void loop() {
   delay(1000);
 }
 
+void stopMotor() {
+  machine.transitionTo(S1);
+  Serial.println("button pressed");  
+}
+
 /*
    FIRST STATE
    return false will exit this state and call transition
  * */
 void state1() {
   //Serial.println("******* State 1 *******");
+  //int leftspeed = random(200);
+  //int rightspeed = random(200);
   myVehicle.setMaxSpeed(200, 200);
+  //Serial.println(leftspeed);
+  //Serial.println(rightspeed);
   myVehicle.move(200, 200);
   while (myVehicle.run());
   //while(myVehicle.runSpeed());
