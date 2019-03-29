@@ -60,6 +60,14 @@ void Braitenvehicle::move(int leftPos, int rightPos) {
 }
 
 /* 
+ * Stops the motors
+ */
+void Braitenvehicle::stop() {
+  stepperLeft->stop();
+  stepperRight->stop();
+}
+
+/* 
  * Set maximum speed for accelerated motors
  * @param {float} leftSpeed   speed for left motor
  * @param {float} rightSpeed  speed for right motor

@@ -89,7 +89,7 @@ If you want to read an analog sensor and trigger the external interrupt once a c
 
 The reference voltage in the example above is created with a simple voltage divider, but you can also just use a PWM output from the Arduino to generate the desired reference voltage.
 
-There's also [library](https://github.com/leomil72/analogComp) for Analog Comparator if none of the above satisfied you. 
+There's also [library](https://github.com/leomil72/analogComp) for Analog Comparator if none of the above satisfies you. 
 
 
 
