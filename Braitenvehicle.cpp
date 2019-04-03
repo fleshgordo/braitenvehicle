@@ -101,19 +101,19 @@ void Braitenvehicle::setAcceleration(float leftAccel, float rightAccel) {
 
 /* 
  * Move vehicle straight forwards
- * @param {int}   steps   number of steps 
+ * @param {int}   speedLeft     speed
+ * @param {int}   speedRight    speed
  */
 
-void Braitenvehicle::forward(int steps) {
-  for (int i = 0; i < steps; i++) {
-    motorLeft->onestep(FORWARD, this->coilSteps);
-    motorRight->onestep(FORWARD, this->coilSteps); 
-  }
+void Braitenvehicle::forward(int stepsLeft, int speedLeft, int stepsRight, int speedRight) {
+  this->setSpeed(speedLeft, speedRight);
+  stepperLeft->move(stepsLeft);
+  stepperRight->move(stepsRight);
 }
 
 /* 
  * Move vehicle straight backwards
- * @param {int} steps number of steps 
+ * @param {int} speed   speed
  */
 void Braitenvehicle::backward(int steps) {
    for (int i = 0; i < steps; i++) {
@@ -155,8 +155,8 @@ void Braitenvehicle::release() {
  * @param {int} angle
  */
 void Braitenvehicle::turnLeft(int angle) {
-  stepperLeft->moveTo(this->numberOfSteps / angle);
-  while(stepperLeft->run());
+  stepperLeft->move(angle);
+  stepperMotor->move(angle * -1);
 }
 
 /* 

@@ -1,5 +1,9 @@
 /*
   Reading sharp distance sensor GP2Y0A21YK0F
+  Wiring:
+  red -> +5v
+  black -> gnd
+  yellow -> Analog in 0
 */
 
 int sensorPin = A0;    // select the input pin for the potentiometer
@@ -35,10 +39,13 @@ void setup() {
 void loop() {
   sensorValue = analogRead(sensorPin);
   while (sensorValue > 100 && sensorValue < 400) {
-    //myVehicle.forward(5,100,5,10);
-    //myVehicle.run();
+    myVehicle.forward(5,100,5,100);
+    while(myVehicle.run());
     sensorValue = analogRead(sensorPin);
    
-  } Serial.println(sensorValue);
+  }
+  // do something else ...
+
+  //Serial.println(sensorValue);
   
 }

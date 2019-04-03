@@ -18,7 +18,7 @@ class Braitenvehicle {
 
     int version(void);
    
-    void forward(int steps);
+    void forward(int stepsLeft, int speedLeft, int stepsRight, int speedRight);
     void backward(int steps);
     void release();
 
@@ -37,7 +37,7 @@ class Braitenvehicle {
     
     boolean run(void);
     void stop();
-    
+
     Adafruit_MotorShield AFMS;
  
     AccelStepperOO *stepperLeft;
