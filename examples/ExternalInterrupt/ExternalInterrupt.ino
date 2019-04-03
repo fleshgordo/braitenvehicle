@@ -72,8 +72,9 @@ void setup() {
 
 void loop() {
   machine.run();
+  Serial.print("current state: ");
   Serial.println(machine.currentState);
-  delay(1000);
+  //delay(1000);
 }
 
 void stopMotor() {
@@ -86,7 +87,7 @@ void stopMotor() {
    return false will exit this state and call transition
  * */
 void state1() {
-  //Serial.println("******* State 1 *******");
+  Serial.println("******* State 1 *******");
   //int leftspeed = random(200);
   //int rightspeed = random(200);
   myVehicle.setMaxSpeed(200, 200);
@@ -108,7 +109,7 @@ bool transitionS1S2() {
 
 void state2() {
   Serial.println("******* State 2 *******");
-  myVehicle.setMaxSpeed(10, 10);
+  myVehicle.setMaxSpeed(100, 100);
   myVehicle.move(-200, 200);
   while (myVehicle.run());
 }

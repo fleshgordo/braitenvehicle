@@ -34,6 +34,8 @@ State* S1 = machine.addState(&state1);
 State* S2 = machine.addState(&state2);
 State* S3 = machine.addState(&state3);
 
+boolean extButton = false;
+const int interruptPin = 2;
 /*
    // For adding a state, first initialise
    State* S3 = machine.addState(&state3);
@@ -60,14 +62,22 @@ void setup() {
   S1->addTransition(&transitionS1S2, S2);
   S2->addTransition(&transitionS2S3, S3);
   S3->addTransition(&transitionS3S1, S1);
+
+  pinMode(interruptPin, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(interruptPin), changeDir, RISING);
+  
 }
 
 void loop() {
   machine.run();
+  Serial.print("current state: ");
   Serial.println(machine.currentState);
   delay(1000);
 }
 
+void changeDir() {
+  extButton = true;
+}
 /*
    FIRST STATE
    return false will exit this state and call transition
@@ -75,8 +85,11 @@ void loop() {
 void state1() {
   //Serial.println("******* State 1 *******");
   myVehicle.setMaxSpeed(200, 200);
-  myVehicle.move(200, 200);
-  while (myVehicle.run());
+  myVehicle.move(10, 10);
+  while (extButton == false) {
+      myVehicle.move(10, 10);
+      myVehicle.run();
+  }
   //while(myVehicle.runSpeed());
 }
 
@@ -91,9 +104,12 @@ bool transitionS1S2() {
 
 void state2() {
   Serial.println("******* State 2 *******");
-  myVehicle.setMaxSpeed(10, 10);
-  myVehicle.move(-200, 200);
-  while (myVehicle.run());
+  myVehicle.setMaxSpeed(100, 100);
+  myVehicle.move(-100,-100);
+  while(myVehicle.run());
+  myVehicle.move(-200,200);
+  while(myVehicle.run());
+  extButton = false;
 }
 
 bool transitionS3S1() {
