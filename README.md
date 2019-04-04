@@ -79,6 +79,17 @@ void loop() {
 }
 ```
 
+Another strategy for running a **real** non-blocking loop would look like:
+```
+void loop() {
+    if (!myVehicle.isRunning()) {
+        myVehicle.setSpeed(100,50); // set left motor speed to 100, right motor to 50
+        myVehicle.move(200, 200); // move to new relative position (left/right 200steps forward)
+    }
+    myVehicle.runSpeed(); // run motor with current speed that is set 
+}
+```
+
 ## External interrupts 
 
 Read this [excellent guide](https://www.allaboutcircuits.com/technical-articles/using-interrupts-on-arduino/) on why we need external interrupts. The UNO board we are using has two external interrupts on pin 2 and 3. The official Arduino website also has good documentation on how to use [interrupt service routines](https://www.arduino.cc/reference/en/language/functions/external-interrupts/attachinterrupt/).
