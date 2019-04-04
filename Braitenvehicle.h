@@ -36,6 +36,9 @@ class Braitenvehicle {
     void setAcceleration(float leftAccel, float rightAccel);
     
     boolean run(void);
+    void runSpeed();
+    bool isRunning();
+    
     void stop();
 
     Adafruit_MotorShield AFMS;

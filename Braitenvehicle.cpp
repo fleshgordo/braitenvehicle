@@ -37,6 +37,16 @@ boolean Braitenvehicle::run() {
   return false;
 }
 
+
+/* run
+ * Poll the motor and step it if a step is due, implementing accelerations and decelerations
+ * @return true   if reached to position
+ */
+void Braitenvehicle::runSpeed() {
+  stepperLeft->runSpeed();
+  stepperRight->runSpeed();
+}
+
 /* 
  * Moves both motors to absolute position
  * @param   {int} leftPos   move left motor to specific position 
@@ -47,6 +57,14 @@ void Braitenvehicle::moveTo(int leftPos, int rightPos) {
   stepperLeft->moveTo(leftPos);
   stepperRight->moveTo(rightPos);
 }
+
+/* 
+ * isRunning
+ * @return  true  if one of the steppers is moving (i. e. not reached position)
+ */
+bool Braitenvehicle::isRunning() {
+  return (stepperLeft->isRunning() || stepperRight->isRunning());
+} 
 
 /* 
  * Moves both motors to relative position
@@ -163,8 +181,8 @@ void Braitenvehicle::turnLeft(int angle) {
  * @param {int} angle
  */
 void Braitenvehicle::turnRight(int angle) {
-  stepperRight->moveTo(this->numberOfSteps / angle);
-  while(stepperRight->run());
+  stepperLeft->move(angle * -1);
+  stepperRight->move(angle);
 }
 
 /*

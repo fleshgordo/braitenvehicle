@@ -1,5 +1,5 @@
 /*
-   Braitenvehicle Example File with Statemachine Logic
+   Braitenvehicle Example File with external interrupt
    Version 0.1
    You'll need the Stepper Adafruit Rev2 stepper library
    https://learn.adafruit.com/adafruit-motor-shield-v2-for-arduino/library-reference
@@ -7,13 +7,13 @@
 
  * */
 
-
 #include "Braitenvehicle.h"
-#include "StateMachine.h"
+
+// switch on/off debug statements
+//#define DEBUG 1
 
 const int stepsPerRevolution = 200;  // change this to fit the number of steps per revolution
 
-//#define DEBUG 1
 
 /*
    Initialize the Braitenvehicle library
@@ -30,7 +30,7 @@ int speedLeft = 200;
 int speedRight = 150;
 int state = 1;
 
-long debouncing_time = 50; //Debouncing Time in Milliseconds
+long debouncing_time = 250; //Debouncing Time in Milliseconds
 volatile unsigned long last_micros;
 
 void setup() {
@@ -44,7 +44,7 @@ void setup() {
   myVehicle.setMaxSpeed(200.0, 200.0);
   myVehicle.setAcceleration(5000, 5000);
   myVehicle.setSpeed(speedLeft, speedRight);
-  
+
   attachInterrupt(digitalPinToInterrupt(interruptPin), debounceInterrupt, CHANGE);
 }
 
@@ -53,7 +53,7 @@ void loop() {
 }
 
 void runBot() {
-  if (!myVehicle.stepperLeft->isRunning() && !myVehicle.stepperRight->isRunning()) {
+  if (!myVehicle.isRunning()) {
     if (state % 2) {
       myVehicle.move(20, 20);
     }
@@ -61,8 +61,7 @@ void runBot() {
       myVehicle.move(-20, -20);
     }
   }
-  myVehicle.stepperLeft->runSpeedToPosition();
-  myVehicle.stepperRight->runSpeedToPosition();
+  myVehicle.runSpeed();
 
 #ifdef DEBUG
   Serial.print("State: ");
