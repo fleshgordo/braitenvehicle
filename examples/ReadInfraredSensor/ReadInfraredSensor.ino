@@ -39,6 +39,7 @@ void setup() {
 void loop() {
   sensorValue = analogRead(sensorPin);
   while (sensorValue > 100 && sensorValue < 400) {
+    //
     myVehicle.forward(5,100,5,100);
     while(myVehicle.run());
     sensorValue = analogRead(sensorPin);

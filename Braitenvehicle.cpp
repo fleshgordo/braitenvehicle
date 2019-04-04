@@ -115,11 +115,10 @@ void Braitenvehicle::forward(int stepsLeft, int speedLeft, int stepsRight, int s
  * Move vehicle straight backwards
  * @param {int} speed   speed
  */
-void Braitenvehicle::backward(int steps) {
-   for (int i = 0; i < steps; i++) {
-    motorLeft->onestep(BACKWARD, this->coilSteps);
-    motorRight->onestep(BACKWARD, this->coilSteps); 
-  }
+void Braitenvehicle::backward(int stepsLeft, int speedLeft, int stepsRight, int speedRight) {
+  this->setSpeed(speedLeft, speedRight);
+  stepperLeft->move(-1 * stepsLeft);
+  stepperRight->move(-1 * stepsRight);
 }
 
 /* 

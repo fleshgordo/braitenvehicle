@@ -19,7 +19,7 @@ class Braitenvehicle {
     int version(void);
    
     void forward(int stepsLeft, int speedLeft, int stepsRight, int speedRight);
-    void backward(int steps);
+    void backward(int stepsLeft, int speedLeft, int stepsRight, int speedRight);
     void release();
 
     bool watchSensors(const byte Sensors[]);
