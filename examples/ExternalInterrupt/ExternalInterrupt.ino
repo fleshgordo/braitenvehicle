@@ -49,17 +49,9 @@ void setup() {
 }
 
 void loop() {
-  runBot();
-}
-
-void runBot() {
+  // only when vehicle is not at final position
   if (!myVehicle.isRunning()) {
-    if (state % 2) {
-      myVehicle.move(20, 20);
-    }
-    else {
-      myVehicle.move(-20, -20);
-    }
+    state % 2 == 0 ? myVehicle.move(20, 20) : myVehicle.move(-20, -20);
   }
   myVehicle.runSpeed();
 
@@ -75,12 +67,12 @@ void runBot() {
 
 void debounceInterrupt() {
   if ((long)(micros() - last_micros) >= debouncing_time * 1000 && (digitalRead(interruptPin) == LOW)) {
-    stopMotor();
+    toggleSpeed();
     last_micros = micros();
   }
 }
 
-void stopMotor() {
+void toggleSpeed() {
   int oldSpeedLeft = speedLeft;
   speedLeft = speedRight * -1;
   speedRight = oldSpeedLeft * -1;
