@@ -11,7 +11,7 @@ const int stepsPerRevolution = 200;  // change this to fit the number of steps p
 * */
 Braitenvehicle myVehicle(stepsPerRevolution, DOUBLE);
 boolean endPos = false;
-int stats = 0; // stillstand = 0, forward 1, backward 2
+int state = 0; // stillstand = 0, forward 1, backward 2
 int endCounter = 0;
 long lastTime = 0;
 long currentTime = 0;
@@ -34,9 +34,24 @@ void setup() {
 
 void loop() {
    
+switch (state) {
+  case 0:
+  break;
+  
+}
 }
 
+void moveForward() {
+myVehicle.forward(10,10,10,20);
+   while(myVehicle.run() && !endPos);
+}
 void triggerSwitch() {
  endPos = true;
  myVehicle.stop();
+ // go backward
+ myVehicle.backward(100,50,100,50);
+ while(myVehicle.run());
+ myVehicle.turnLeft(180);
+ while(myVehicle.run());
+ endPos = false;
 }

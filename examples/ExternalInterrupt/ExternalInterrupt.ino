@@ -13,9 +13,7 @@
 
 const int stepsPerRevolution = 200;  // change this to fit the number of steps per revolution
 
-
-// analog sensors: pin0, pin1, threshold1, threshold2
-const uint8_t Sensors[] = {A0, A1, 200, 200};
+//#define DEBUG 1
 
 /*
    Initialize the Braitenvehicle library
@@ -26,107 +24,70 @@ const uint8_t Sensors[] = {A0, A1, 200, 200};
  * */
 Braitenvehicle myVehicle(stepsPerRevolution, DOUBLE);
 
-// initialize State machine
-StateMachine machine = StateMachine();
-
-// initialize states
-State* S1 = machine.addState(&state1);
-State* S2 = machine.addState(&state2);
-State* S3 = machine.addState(&state3);
-
 const byte interruptPin = 2;
-long lastDebounceTime = 0;  // the last time the output pin was toggled
-long debounceDelay = 50;    // the debounce time; increase if the output flickers
-int buttonState = 0;
-int lastButtonState = 0;
 
-/*
-   // For adding a state, first initialise
-   State* S3 = machine.addState(&state3);
+int speedLeft = 200;
+int speedRight = 150;
+int state = 1;
 
-   // Add transition within setup() function
-   S3->addTransition(&transitionS3S1,S1);
-
-   define void transitionS3S1() { // transition here, if not needed just do return true;}
-   define void state3() {}
- * */
+long debouncing_time = 50; //Debouncing Time in Milliseconds
+volatile unsigned long last_micros;
 
 void setup() {
+#ifdef DEBUG
   Serial.begin(9600);
   Serial.println("...starting");
+#endif
 
-  // init sensors
-  myVehicle.initSensors(Sensors);
   myVehicle.AFMS.begin();
 
   myVehicle.setMaxSpeed(200.0, 200.0);
-  myVehicle.setAcceleration(50, 50);
-
-  // define state transitions
-  S1->addTransition(&transitionS1S2, S2);
-  S2->addTransition(&transitionS2S3, S3);
-  S3->addTransition(&transitionS3S1, S1);
-
-  attachInterrupt(digitalPinToInterrupt(interruptPin), stopMotor, RISING);
+  myVehicle.setAcceleration(5000, 5000);
+  myVehicle.setSpeed(speedLeft, speedRight);
+  
+  attachInterrupt(digitalPinToInterrupt(interruptPin), debounceInterrupt, CHANGE);
 }
 
 void loop() {
-  machine.run();
-  Serial.print("current state: ");
-  Serial.println(machine.currentState);
-  //delay(1000);
+  runBot();
+}
+
+void runBot() {
+  if (!myVehicle.stepperLeft->isRunning() && !myVehicle.stepperRight->isRunning()) {
+    if (state % 2) {
+      myVehicle.move(20, 20);
+    }
+    else {
+      myVehicle.move(-20, -20);
+    }
+  }
+  myVehicle.stepperLeft->runSpeedToPosition();
+  myVehicle.stepperRight->runSpeedToPosition();
+
+#ifdef DEBUG
+  Serial.print("State: ");
+  Serial.print(state);
+  Serial.print(" speedLeft: ");
+  Serial.print(speedLeft);
+  Serial.print(" speedRight: ");
+  Serial.println(speedRight);
+#endif
+}
+
+void debounceInterrupt() {
+  if ((long)(micros() - last_micros) >= debouncing_time * 1000 && (digitalRead(interruptPin) == LOW)) {
+    stopMotor();
+    last_micros = micros();
+  }
 }
 
 void stopMotor() {
-  machine.transitionTo(S1);
-  Serial.println("button pressed");  
-}
-
-/*
-   FIRST STATE
-   return false will exit this state and call transition
- * */
-void state1() {
-  Serial.println("******* State 1 *******");
-  //int leftspeed = random(200);
-  //int rightspeed = random(200);
-  myVehicle.setMaxSpeed(200, 200);
-  //Serial.println(leftspeed);
-  //Serial.println(rightspeed);
-  myVehicle.move(200, 200);
-  while (myVehicle.run());
-  //while(myVehicle.runSpeed());
-}
-
-/*
-   TRANSITION FROM State1 to State2
-   return true will pass to next state (state2)
- * */
-bool transitionS1S2() {
-  //Serial.println(">>>>>>> Transition 1 -> 2 <<<<<<<<");
-  return true;
-}
-
-void state2() {
-  Serial.println("******* State 2 *******");
-  myVehicle.setMaxSpeed(100, 100);
-  myVehicle.move(-200, 200);
-  while (myVehicle.run());
-}
-
-bool transitionS3S1() {
-  Serial.println(">>>>>>> Transition 3 -> 1 <<<<<<<<");
-  return true;
-}
-
-bool transitionS2S3() {
-  Serial.println(">>>>>>> Transition 2 -> 3 <<<<<<<<");
-  return true;
-}
-
-void state3() {
-  Serial.println("******* State 3 *******");
-  myVehicle.setMaxSpeed(50, 50);
-  myVehicle.move(200, -200);
-  while (myVehicle.run());
+  int oldSpeedLeft = speedLeft;
+  speedLeft = speedRight * -1;
+  speedRight = oldSpeedLeft * -1;
+#ifdef DEBUG
+  Serial.println("****** bumper *******");
+#endif
+  state += 1;
+  myVehicle.setSpeed(speedLeft, speedRight);
 }
