@@ -155,7 +155,7 @@ void Braitenvehicle::release() {
  */
 void Braitenvehicle::turnLeft(int angle) {
   stepperLeft->move(angle);
-  stepperMotor->move(angle * -1);
+  stepperRight->move(angle * -1);
 }
 
 /* 
